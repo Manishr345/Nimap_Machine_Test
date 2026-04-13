@@ -14,11 +14,15 @@ select * from products;
 
 
 delimiter &&
-create procedure getAllProducts()
+create procedure getAllProducts(
+    in plimit int,
+    in poffset int
+)
 begin
-    select p.id, p.name, p.categoryid, c.name
+    select p.id as productid, p.name as productname, p.categoryid, c.name as categoryname
     from products p
-    left join categories c on p.categoryid = c.id;
+    left join categories c on p.categoryid = c.id
+    limit plimit offset poffset;
 end &&
 delimiter ;
 
