@@ -27,10 +27,10 @@ delimiter ;
 delimiter &&
 create procedure insertProduct(
     in productName varchar(50),
-    in categoryId int
+    in category_id int
 )
 begin
-    insert into products (name, categoryid) values (productName, categoryId);
+    insert into products (name, categoryid) values (productName, category_id);
 end &&
 delimiter ;
 
@@ -81,11 +81,11 @@ end &&
 delimiter ;
 
 delimiter &&
-alter procedure deleteCategory(
+create procedure deleteCategory(
     in category_id int
 )
 begin
 	delete from products where categoryid = category_id;
-    delete from categories where id = categoryId;
+    delete from categories where id = category_id;
 end &&
 delimiter ;
