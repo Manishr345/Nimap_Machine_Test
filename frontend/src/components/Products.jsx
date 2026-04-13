@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const pageSize = 10;
@@ -13,6 +14,10 @@ const Products = () => {
         fetchProducts(page);
     }, [page]);
 
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
     const fetchProducts = async (currentPage) => {
         try {
             const response = await axios.get(`http://localhost:5000/api/products?page=${currentPage}&pageSize=${pageSize}`);
@@ -20,6 +25,15 @@ const Products = () => {
             setTotalPages(response.data.pagination.totalPages);
         } catch (error) {
             console.error("Error fetching products", error);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/categories');
+            setCategories(response.data.data);
+        } catch (error) {
+            console.error("Error fetching categories", error);
         }
     };
 
@@ -91,7 +105,7 @@ const Products = () => {
     };
 
     return (
-        <div style={{marginTop: '6rem', backgroundColor: '#f4f7f6', color: '#333', minHeight: '100vh', width: '100%', fontFamily: 'system-ui, sans-serif' }}>
+        <div style={{marginTop: '6rem', backgroundColor: '#f4f7f6', color: '#333', minHeight: '100vh', width: '100%', boxSizing: 'border-box', padding: '30px', fontFamily: 'system-ui, sans-serif' }}>
             <h2 style={{ color: '#2c3e50', marginBottom: '20px' }}>Product Management</h2>
 
             <div style={{ 
@@ -115,24 +129,27 @@ const Products = () => {
                         required
                         style={inputStyle}
                     />
-                    <input
-                        type="number"
+                    
+                    <select
                         name="categoryId"
-                        placeholder="Category ID"
                         value={formData.categoryId}
                         onChange={handleInputChange}
                         required
-                        style={inputStyle}
-                    />
+                        style={{ ...inputStyle, cursor: 'pointer' }}
+                    >
+                        <option value="" disabled>Select a Category</option>
+                        {categories.map((c) => (
+                            <option key={c.categoryid} value={c.categoryid}>
+                                {c.categoryname}
+                            </option>
+                        ))}
+                    </select>
+
                     <button type="submit" style={{ ...btnStyle, backgroundColor: 'black', color: 'white' }}>
                         {editingId ? "Update Product" : "Save Product"}
                     </button>
                     {editingId && (
-                        <button
-                            type="button"
-                            onClick={() => { setEditingId(null); setFormData({ productName: '', categoryId: '' }) }}
-                            style={{ ...btnStyle, backgroundColor: '#e9ecef', color: '#495057' }}
-                        >
+                        <button type="button" onClick={() => { setEditingId(null); setFormData({ productName: '', categoryId: '' }) }} style={{ ...btnStyle, backgroundColor: '#e9ecef', color: '#495057' }}>
                             Cancel
                         </button>
                     )}
