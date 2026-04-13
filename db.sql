@@ -19,10 +19,7 @@ create procedure getAllProducts(
     in poffset int
 )
 begin
-    select p.id as productid, p.name as productname, p.categoryid, c.name as categoryname
-    from products p
-    left join categories c on p.categoryid = c.id
-    limit plimit offset poffset;
+    select p.id as productid, p.name as productname, p.categoryid, c.name as categoryname from products p left join categories c on p.categoryid = c.id limit plimit offset poffset;
 end &&
 delimiter ;
 
@@ -33,8 +30,7 @@ create procedure insertProduct(
     in categoryId int
 )
 begin
-    insert into products (name, categoryid)
-    values (productName, categoryId);
+    insert into products (name, categoryid) values (productName, categoryId);
 end &&
 delimiter ;
 
@@ -42,13 +38,10 @@ delimiter &&
 create procedure updateProduct(
     in productId int,
     in productName varchar(50),
-    in categoryId int
+    in category_id int
 )
 begin
-    update products
-    set name = productName,
-        categoryid = categoryId
-    where id = productId;
+    update products set name = productName, categoryid = category_id where id = productId;
 end &&
 delimiter ;
 
@@ -58,5 +51,41 @@ create procedure deleteProduct(
 )
 begin
     delete from products where id = productId;
+end &&
+delimiter ;
+
+delimiter &&
+create procedure getAllCategories()
+begin
+    select id as categoryid, name as categoryname from categories;
+end &&
+delimiter ;
+
+delimiter &&
+create procedure insertCategory(
+    in categoryName varchar(50)
+)
+begin
+    insert into categories (name) values (categoryName);
+end &&
+delimiter ;
+
+delimiter &&
+create procedure updateCategory(
+    in categoryId int,
+    in categoryName varchar(50)
+)
+begin
+    update categories set name = categoryName where id = categoryId;
+end &&
+delimiter ;
+
+delimiter &&
+alter procedure deleteCategory(
+    in category_id int
+)
+begin
+	delete from products where categoryid = category_id;
+    delete from categories where id = categoryId;
 end &&
 delimiter ;
